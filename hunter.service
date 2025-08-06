@@ -4,6 +4,7 @@ After = network.target
 
 [Service]
 Type = simple
+WorkingDirectory = /var/log/
 ExecStart = /usr/bin/python3 /opt/system-hunter/hunter.py
 User = root
 Group = root
