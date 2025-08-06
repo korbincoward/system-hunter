@@ -13,4 +13,4 @@ Run the following commands to start system-hunter on your machine:
 5. sudo systemctl enable system-hunter.service
 6. sudo systemctl start system-hunter.service
 ```
-Logs will be stored in `/var/log` in the `detected_changes.txt` file
+Logs will be stored in `/var/log` in the `detected_changes.log` file
