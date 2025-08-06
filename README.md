@@ -1,4 +1,5 @@
 # system-hunter
+---
 System-Hunter will be a systemd service that analyzes suspicious and malicious
 systemd services and configurations on linux systems. ATT&CK T1501 is the technique
 of creating or modifying system processes, specifically the systemd service.
@@ -9,3 +10,16 @@ identify any suspicious or malicious services running by referencing a hash whit
 checking modification dates, and validating services associated with their specific
 distributions. The scan finding will be recorded as a .csv file which will allow for
 integration into other analysis platforms.
+
+## How to Install
+---
+Run the following commands to start system-hunter on your machine:
+```
+1. cd /opt
+2. sudo git clone https://github.com/korbincoward/system-hunter.git system-hunter
+3. sudo cp /opt/system-hunter/hunter.service /etc/systemd/system/system-hunter.service
+4. sudo systemctl daemon-reload
+5. sudo systemctl enable system-hunter.service
+6. sudo systemctl start system-hunter.service
+```
+Logs will be stored in `/var/log` in the `detected_changes.txt` file
