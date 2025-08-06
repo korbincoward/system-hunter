@@ -29,6 +29,7 @@ def scan_for_changes(directory, previous_state=None):
     return current_state, changes
 
 if __name__ == "__main__":
+    #Defines the paths that will be monitored.
     file_paths = [
         "/etc/systemd/system",
         "/lib/systemd/system",
@@ -40,6 +41,7 @@ if __name__ == "__main__":
         for path in file_paths:
             previous_state[path], changes = scan_for_changes(path, previous_state.get(path))
             detected_changes.extend(changes)
+       # If changes are detected they will be logged with a timestamp.
         if detected_changes:
             with open("detected_changes.log", "a") as f:
                 for change in detected_changes:

@@ -1,0 +1,16 @@
+[Unit]
+Description = This is a python script that tracks the creation/modification and deletion of service files in their respective directories.
+After = network.target #starts after network interfaces are made available
+ 
+[Service]
+Type = simple
+ExecStart = /usr/bin/python3 hunter.py
+User = root
+Group = root
+Restart = on-failure # Restart when there are errors
+SyslogIdentifier = detected_changes.log
+RestartSec = 5
+TimeoutStartSec = infinity
+ 
+[Install]
+WantedBy = multi-user.target #Make it accessible to other users
