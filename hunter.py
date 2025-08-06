@@ -1,6 +1,5 @@
 import os
-import time
-import csv
+import datetime
 
 def scan_for_changes(directory, previous_state=None):
     current_state = {}
@@ -42,6 +41,6 @@ if __name__ == "__main__":
             previous_state[path], changes = scan_for_changes(path, previous_state.get(path))
             detected_changes.extend(changes)
         if detected_changes:
-            for change in detected_changes:
-                print(change)
-        time.sleep(60) # Scan every 60 seconds
+            with open("detected_changes.log", "a") as f:
+                for change in detected_changes:
+                    f.write("[%s] %s\n" % (datetime.datetime.now(), change))
