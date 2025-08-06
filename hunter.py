@@ -6,32 +6,41 @@ def scan_for_changes(directory, previous_state=None):
     current_state = {}
     for root, _, files in os.walk(directory):
         for file in files:
-            filepath = os.path.join(root, file)
-            current_state[filepath] = os.path.getmtime(filepath)
+            file_paths = os.path.join(root, file)
+            try:
+                current_state[file_paths] = os.path.getmtime(file_paths)
+            except FileNotFoundError:
+                # Skip files that no longer exist
+                continue
 
     if previous_state is None:
         return current_state, [] # Initial scan, no changes to report yet
 
     changes = []
     # Check for modified or new files
-    for filepath, mtime in current_state.items():
-        if filepath not in previous_state or previous_state[filepath] != mtime:
-            changes.append(f"Modified or new: {filepath}")
+    for file_path, mtime in current_state.items():
+        if file_path not in previous_state or previous_state[file_path] != mtime:
+            changes.append(f"Modified or new: {file_path}")
 
     # Check for deleted files
-    for filepath in previous_state:
-        if filepath not in current_state:
-            changes.append(f"Deleted: {filepath}")
+    for file_path in previous_state:
+        if file_path not in current_state:
+            changes.append(f"Deleted: {file_path}")
 
     return current_state, changes
 
 if __name__ == "__main__":
-    systemd_etc = "/etc/systemd/system"
-    systemd_lib = "/lib/systemd/system"
-    systemd_us = "/usr/lib/systemd/system"
-    previous_state = None
+    file_paths = [
+        "/etc/systemd/system",
+        "/lib/systemd/system",
+        "/usr/lib/systemd/system"
+    ]
+    previous_state = {}
     while True:
-        previous_state, detected_changes = scan_for_changes(systemd_dir, previous_state)
+        detected_changes = []
+        for path in file_paths:
+            previous_state[path], changes = scan_for_changes(path, previous_state.get(path))
+            detected_changes.extend(changes)
         if detected_changes:
             for change in detected_changes:
                 print(change)
