@@ -1,9 +1,10 @@
 import os
 import datetime
+import time
 
 def scan_for_changes(directory, previous_state=None):
     current_state = {}
-    for root, _, files in os.walk(directory):
+    for root, _, files in os.walk(os.path.abspath(directory)):
         for file in files:
             file_paths = os.path.join(root, file)
             try:
@@ -19,7 +20,7 @@ def scan_for_changes(directory, previous_state=None):
     # Check for modified or new files
     for file_path, mtime in current_state.items():
         if file_path not in previous_state or previous_state[file_path] != mtime:
-            changes.append(f"Modified or new: {file_path}")
+            changes.append(f"Modified or new: {file_path}, Last modified: {datetime.datetime.fromtimestamp(mtime)}")
 
     # Check for deleted files
     for file_path in previous_state:
@@ -29,7 +30,7 @@ def scan_for_changes(directory, previous_state=None):
     return current_state, changes
 
 if __name__ == "__main__":
-    #Defines the paths that will be monitored.
+    # Defines the paths that will be monitored.
     file_paths = [
         "/etc/systemd/system",
         "/lib/systemd/system",
@@ -41,8 +42,10 @@ if __name__ == "__main__":
         for path in file_paths:
             previous_state[path], changes = scan_for_changes(path, previous_state.get(path))
             detected_changes.extend(changes)
-       # If changes are detected they will be logged with a timestamp.
+        # If changes are detected they will be logged with a timestamp.
         if detected_changes:
             with open("detected_changes.log", "a") as f:
                 for change in detected_changes:
-                    f.write("[%s] %s\n" % (datetime.datetime.now(), change))
+                    hash_value = md5_calculator(change.split(': ')[-1])  # Extract file path for hashing
+                    f.write(f"[{datetime.datetime.now()}] {change}, MD5: {hash_value}\n")
+        time.sleep(60)  # Sleep for 60 seconds before the next scan
