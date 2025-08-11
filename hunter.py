@@ -46,6 +46,5 @@ if __name__ == "__main__":
         if detected_changes:
             with open("detected_changes.log", "a") as f:
                 for change in detected_changes:
-                    hash_value = md5_calculator(change.split(': ')[-1])  # Extract file path for hashing
                     f.write(f"[{datetime.datetime.now()}] {change}, MD5: {hash_value}\n")
         time.sleep(60)  # Sleep for 60 seconds before the next scan
