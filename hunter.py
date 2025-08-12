@@ -53,5 +53,5 @@ if __name__ == "__main__":
         if detected_changes:
             with open("detected_changes.log", "a") as f:
                 for change in detected_changes:
-                    f.write(f"[{datetime.datetime.now()}] {change}, MD5: {hash_value}\n")
+                    f.write(f"[{datetime.datetime.now()}] {change}\n")
         time.sleep(60)  # Sleep for 60 seconds before the next scan
