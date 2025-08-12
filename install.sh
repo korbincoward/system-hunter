@@ -3,43 +3,37 @@
 #Exit on error
 set -e 
 
-#Variables
-SERVICE_NAME="hunter.service"
-SCRIPT_NAME="hunter.py"
-echo "Select installation directory:"
-read directory
-INSTALL_DIR="$directory/system-hunter"
-LOG_DIR="/var/log/system-hunter"
-SERVICE_FILE="/etc/systemd/system/$SERVICE_NAME"
+sudo git clone https://github.com/korbincoward/system-hunter.git /opt/system-hunter
 
-# Pre installation tasks
-echo "Starting pre-installation tasks..."
-if [[ $USER = 'root' ]]; then
-    mkdir -p $INSTALL_DIR
-    git clone https://github.com/korbincoward/system-hunter.git $INSTALL_DIR
-    cp $INSTALL_DIR/$SERVICE_NAME $SERVICE_FILE
-    echo "Pre-installation tasks completed."
-else
-    echo "Please run this script as root or with sudo."
-    exit 1
-fi
+sudo cp /opt/system-hunter/hunter.service /etc/systemd/system/system-hunter.service
 
-#Systemd setup
-systemctl daemon-reload
-systemctl enable $SERVICE_NAME
-systemctl start $SERVICE_NAME
+#Creates a system user that does not have a home directory or shell access
+#This is a security measure to prevent unauthorized access to the system
+sudo adduser --system --no-create-home --shell /usr/sbin/nologin --group systemhunter
 
-#Securing installation
-echo "Securing installation..."
-sudo adduser --system --no-create-home --group systemhunter
-sudo chown -R systemhunter:systemhunter $INSTALL_DIR
-sudo chmod 700 $INSTALL_DIR/$SCRIPT_NAME
-sudo chmod 640 $SERVICE_FILE    
-declare -r status=$(systemctl is-active $SERVICE_NAME)
-#Check 
-if [ "$status" = "active" ]; then
-    echo "Installation complete. The service is now running."
-    else
-    echo "Installation failed. The service is not running."
-    exit 1
-fi
+#Secure the service file and script
+sudo chmod 640 /etc/systemd/system/system-hunter.service
+sudo chown root:systemhunter /etc/systemd/system/system-hunter.service
+sudo chmod 740 /opt/system-hunter/hunter.py
+sudo chown systemhunter:systemhunter /opt/system-hunter/hunter.py
+
+#Configure logrotate
+sudo tee /etc/logrotate.d/system-hunter > /dev/null <<EOL
+/var/log/system-hunter/detected_changes.log {
+    daily
+    missingok
+    rotate 7
+    compress
+    delaycompress
+    notifempty
+    create 640 systemhunter systemhunter
+}
+EOL
+sudo logrotate -f /etc/logrotate.d/system-hunter
+
+#Setup systemd service
+sudo systemctl daemon-reload
+sudo systemctl enable system-hunter.service
+sudo systemctl start system-hunter.service
+
+echo "System Hunter has been installed and started successfully."
