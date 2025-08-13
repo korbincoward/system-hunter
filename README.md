@@ -6,11 +6,8 @@ System-Hunter is a systemd service that analyzes the directories of systemd and 
 ---
 Run the following commands to start system-hunter on your machine:
 ```
-1. cd /opt
-2. sudo git clone https://github.com/korbincoward/system-hunter.git system-hunter
-3. sudo cp /opt/system-hunter/hunter.service /etc/systemd/system/system-hunter.service
-4. sudo systemctl daemon-reload
-5. sudo systemctl enable system-hunter.service
-6. sudo systemctl start system-hunter.service
+sudo git clone https://github.com/korbincoward/system-hunter.git
+chmod +x install.sh
+./install.sh
 ```
 Logs will be stored in `/var/log` in the `detected_changes.log` file
