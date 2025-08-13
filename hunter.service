@@ -4,7 +4,7 @@ After = network.target
 
 [Service]
 Type = simple
-WorkingDirectory = /var/log/
+WorkingDirectory = /var/log/system-hunter
 ExecStart = /usr/bin/python3 /opt/system-hunter/hunter.py
 User = systemhunter
 Group = systemhunter
@@ -12,6 +12,10 @@ Restart = on-failure
 SyslogIdentifier = detected_changes.log
 RestartSec = 5
 TimeoutStartSec = infinity
+
+# Added Security
+ProtectSystem=full
+NoNewPrivileges=true
 
 [Install]
 WantedBy = multi-user.target

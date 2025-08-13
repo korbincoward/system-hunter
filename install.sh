@@ -8,28 +8,15 @@ sudo git clone https://github.com/korbincoward/system-hunter.git /opt/system-hun
 sudo cp /opt/system-hunter/hunter.service /etc/systemd/system/system-hunter.service
 
 #Creates a system user that does not have a home directory or shell access
-#This is a security measure to prevent unauthorized access to the system
 sudo adduser --system --no-create-home --shell /usr/sbin/nologin --group systemhunter
 
-#Secure the service file and script
-sudo chmod 640 /etc/systemd/system/system-hunter.service
-sudo chown root:systemhunter /etc/systemd/system/system-hunter.service
-sudo chmod 740 /opt/system-hunter/hunter.py
-sudo chown systemhunter:systemhunter /opt/system-hunter/hunter.py
+# Create log directory and file
+sudo mkdir -p /var/log/system-hunter
+sudo touch /var/log/system-hunter/detected_changes.log
+sudo chown -R systemhunter:systemhunter /var/log/system-hunter
+sudo chmod 750 /var/log/system-hunter
+sudo chmod 640 /var/log/system-hunter/detected_changes.log
 
-#Configure logrotate
-sudo tee /etc/logrotate.d/system-hunter > /dev/null <<EOL
-/var/log/system-hunter/detected_changes.log {
-    daily
-    missingok
-    rotate 7
-    compress
-    delaycompress
-    notifempty
-    create 640 systemhunter systemhunter
-}
-EOL
-sudo logrotate -f /etc/logrotate.d/system-hunter
 
 #Setup systemd service
 sudo systemctl daemon-reload
