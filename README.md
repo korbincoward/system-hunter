@@ -9,6 +9,5 @@ Run the following commands to start system-hunter on your machine:
 sudo git clone https://github.com/korbincoward/system-hunter.git
 chmod +x install.sh
 ./install.sh
-test
 ```
 Logs will be stored in `/var/log` in the `detected_changes.log` file
