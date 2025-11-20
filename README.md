@@ -1,3 +1,4 @@
+*There are plans to produce more secure code.
 # system-hunter
 ---
 System-Hunter is a systemd service that analyzes the directories of systemd and reports activities to a log file. System-Hunter currently logs the creation, modification, and deletion of files within the specified directories and puts them into a log file that includes a date and timestamp, the directory where the event occurred, and the name of the service the event affected. System-Hunter was created to be a lightweight service that when used in conjunction with other tools will offer more insight to adversary movements and provide better TTP management.
