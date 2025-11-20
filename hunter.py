@@ -28,13 +28,6 @@ def scan_for_changes(directory, previous_state=None):
             changes.append(f"Deleted: {file_path}")
 
     return current_state, changes
-    
-    # If modifications do not match the file_paths, exit with a kill switch.
-def kill_switch(directory, allowed_paths):
-    if directory not in allowed_paths:
-        print("Kill switch activated. Exiting...")
-        exit(25)
-    return directory 
 
 if __name__ == "__main__":
     # Defines the paths that will be monitored.
